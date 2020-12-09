@@ -1,7 +1,7 @@
 # MagicMirror² Module: Covid-THL 
 MagicMirror² module for checking Covid data in Finland (source: [THL](https://thl.fi/en/web/thlfi-en/statistics/statistical-databases/open-data/confirmed-corona-cases-in-finland-covid-19-))
 
-![Screenshot](img/screenshot.png)
+![Screenshot](img/Screenshot.png)
 
 ## Installation
 
