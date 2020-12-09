@@ -13,7 +13,7 @@ Module.register("MMM-COVID-THL", {
 	},
 
 	getStyles: function () {
-		return ["style.css"];
+		return ["thlcovid_style.css"];
 	},
 
 	getTranslations: function () {
