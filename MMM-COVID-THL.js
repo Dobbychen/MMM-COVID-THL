@@ -37,7 +37,7 @@ Module.register("MMM-COVID-THL", {
 
 	getDom: function () {
 		const wrapper = document.createElement("div");
-		wrapper.className = "wrapper";
+		wrapper.className = "thlwrapper";
 		if (this.fetchedData && this.fetchedData["header"]) {
 			Log.info("THL fetchedData ")
 

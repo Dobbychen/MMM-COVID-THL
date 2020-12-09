@@ -20,9 +20,12 @@ Go to the modules folder:
 cd MMM-COVID-THL
 ````
 
-Install the dependencies:
+## Dependencies:
+This module relies on [jsonstat-toolkit](https://github.com/jsonstat/toolkit) to parse THL data.
+
+Install the dependencies (in the root):
 ````bash
-npm install
+npm install jsonstat-toolkit
 ````
 
 Add the module to the modules array in the `config/config.js` file by adding the following section. You can change this configuration later when you see this works:
