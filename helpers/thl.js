@@ -1,0 +1,109 @@
+const JSONstat = require("jsonstat-toolkit");
+const moment = require("moment")
+
+const allDimensions = require('./dimensions2020.json')
+function findWeekSid(offset = 0) {
+	let weekNumber = moment().subtract(offset, "week").week();
+	let results = allDimensions[1]["children"][0]["children"].find(element => element.sort == weekNumber + 1)
+	return results.sid
+}
+
+function createXdayHeader(days) {
+	let header = []
+	if (days < 3) {
+		console.error("Days must be more than 2 days")
+	} else {
+		for (let i = days; i > 0; i--) {
+			let today = moment()
+			header.push(today.subtract(i - 1, "days").format('YYYY-MM-DD'))
+		}
+	}
+	return header
+}
+
+
+async function fetchWeeklyData(language, weekSID, districtWatchList) {
+	url = `https://sampo.thl.fi/pivot/prod/${language}/epirapo/covid19case/fact_epirapo_covid19case.json?column=dateweek2020010120201231-${weekSID}&column=hcdmunicipality2020-445222&row=measure-141082`
+
+	url = `https://sampo.thl.fi/pivot/prod/${language}/epirapo/covid19case/fact_epirapo_covid19case.json?column=dateweek2020010120201231-${weekSID}&column=hcdmunicipality2020-445222&row=measure-141082`
+
+	hcdRegexp = new RegExp(districtWatchList.join("|"), 'gi');
+
+	let newData = {};
+	console.log("Trying to fetch from:", url)
+	try {
+		const j = await JSONstat(url)
+
+		var data = j.Dataset(0).toTable({ type: "arrobj", content: "label" }, function (d) {
+			if (d.hcdmunicipality2020.match(hcdRegexp) && d.measure.match(/(cases)|(deaths)/)) {
+				return {
+					date: d.dateweek2020010120201231,
+					hcdmunicipality: d.hcdmunicipality2020,
+					measure: d.measure,
+					value: d.value ? d.value : 0
+				};
+			}
+		})
+
+		let header = [...new Set(data.map(element => element.date))];
+
+		let body = data.reduce(function (r, a) {
+			r[a.hcdmunicipality] = r[a.hcdmunicipality] || {};
+
+			r[a.hcdmunicipality][a.date] = r[a.hcdmunicipality][a.date] || {};
+			r[a.hcdmunicipality][a.date][a["measure"]] = a["value"]
+
+			return r;
+		}, Object.create(null));
+
+		let newData = {
+			header,
+			body
+		}
+		return newData
+	} catch (err) {
+		console.log("MMM-COVID-THL ERROR: ", err)
+		return {
+			header: null,
+			body: null
+		}
+	}
+
+}
+
+const THL = {
+	fetchData: async function ({ language, districtWatchList, days }, callback) {
+
+		const forLoop = async _ => {
+			let rawAllData = []
+			let weeks = Math.ceil((days - 1) / 7) + 1; // Add one more week to be sure we get all the data
+			console.log("Start async...")
+			for (let i = weeks; i > 0; i--) {
+				weekSID = findWeekSid(i - 1)
+				let data = await fetchWeeklyData(language, weekSID, districtWatchList)
+				rawAllData.push(data["body"])
+			}
+			return rawAllData
+		}
+
+		forLoop().then(rawAllDataBody => {
+			let allData = {}
+			allData["header"] = createXdayHeader(days)
+			let allDataBody = {}
+			for (const date of allData["header"]) {
+				for (const body of rawAllDataBody) {
+					for (key in body) {
+						if (body[key][date]) {
+							if (!allDataBody[key]) allDataBody[key] = {}
+							allDataBody[key][date] = body[key][date]
+						}
+					}
+				}
+			}
+			allData["body"] = allDataBody
+			callback(allData)
+		})
+	}
+}
+
+module.exports = THL;

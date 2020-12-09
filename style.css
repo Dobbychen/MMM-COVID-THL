@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
+
+.wrapper {  
+  color: #cccccc;
+  font-family: "Source Code Pro", monospace;
+  font-size: 12pt;
+  text-align: center;
+}
+
+.wrapper .banner {
+  height: 3em;
+  display: block;
+  margin: 0 auto 10px auto;
+  text-align: left;
+}
+
+.covid-table .covid-header-row {
+  margin-bottom: 12px;
+  line-height: 1.3em;
+}
+
+.covid-table .covid-header-cell {
+  padding: 0 3px 4px 3px;
+  font-size: 12pt;
+}
+
+.covid-table .covid-detail-location {
+  text-align: left;
+  line-height: 1.2em;
+  font-size: 10pt;
+  text-overflow: ellipsis;
+}
