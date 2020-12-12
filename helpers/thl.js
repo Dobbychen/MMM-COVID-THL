@@ -2,19 +2,19 @@ const JSONstat = require("jsonstat-toolkit");
 const moment = require("moment")
 
 const allDimensions = require('./dimensions2020.json')
-function findWeekSid(offset = 0) {
-	let weekNumber = moment().subtract(offset, "week").week();
+function findWeekSid(dayOffset = 0, weekOffset = 0) {
+	let weekNumber = moment().subtract(dayOffset, "day").subtract(weekOffset, "week").week();
 	let results = allDimensions[1]["children"][0]["children"].find(element => element.sort == weekNumber + 1)
 	return results.sid
 }
 
-function createXdayHeader(days) {
+function createXdayHeader(dayOffset, days) {
 	let header = []
 	if (days < 3) {
 		console.error("Days must be more than 2 days")
 	} else {
 		for (let i = days; i > 0; i--) {
-			let today = moment()
+			let today = moment().subtract(dayOffset, "day")
 			header.push(today.subtract(i - 1, "days").format('YYYY-MM-DD'))
 		}
 	}
@@ -23,8 +23,6 @@ function createXdayHeader(days) {
 
 
 async function fetchWeeklyData(language, weekSID, districtWatchList) {
-	url = `https://sampo.thl.fi/pivot/prod/${language}/epirapo/covid19case/fact_epirapo_covid19case.json?column=dateweek2020010120201231-${weekSID}&column=hcdmunicipality2020-445222&row=measure-141082`
-
 	url = `https://sampo.thl.fi/pivot/prod/${language}/epirapo/covid19case/fact_epirapo_covid19case.json?column=dateweek2020010120201231-${weekSID}&column=hcdmunicipality2020-445222&row=measure-141082`
 
 	hcdRegexp = new RegExp(districtWatchList.join("|"), 'gi');
@@ -72,14 +70,14 @@ async function fetchWeeklyData(language, weekSID, districtWatchList) {
 }
 
 const THL = {
-	fetchData: async function ({ language, districtWatchList, days }, callback) {
+	fetchData: async function ({ language, districtWatchList, lastDateOffset, days }, callback) {
 
 		const forLoop = async _ => {
 			let rawAllData = []
-			let weeks = Math.ceil((days - 1) / 7) + 1; // Add one more week to be sure we get all the data
+			let weeks = Math.ceil((days - lastDateOffset - 1) / 7) + 1; // Add one more week to be sure we get all the data
 			console.log("Start async...")
 			for (let i = weeks; i > 0; i--) {
-				weekSID = findWeekSid(i - 1)
+				weekSID = findWeekSid(lastDateOffset, i - 1)
 				let data = await fetchWeeklyData(language, weekSID, districtWatchList)
 				rawAllData.push(data["body"])
 			}
@@ -88,7 +86,7 @@ const THL = {
 
 		forLoop().then(rawAllDataBody => {
 			let allData = {}
-			allData["header"] = createXdayHeader(days)
+			allData["header"] = createXdayHeader(lastDateOffset, days)
 			let allDataBody = {}
 			for (const date of allData["header"]) {
 				for (const body of rawAllDataBody) {

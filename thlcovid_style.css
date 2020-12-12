@@ -7,10 +7,11 @@
   text-align: center;
 }
 
-.thlwrapper .banner {
+.thlwrapper .title {
   height: 3em;
   display: block;
   margin: 0 auto 10px auto;
+  font-size: 14pt;
   text-align: left;
 }
 

@@ -1,0 +1,30 @@
+{
+  "name": "mmm-covid-thl",
+  "version": "0.2.0",
+  "description": "MagicMirror² module for checking Covid data in Finland ",
+  "main": "MMM-COVID-THL.js",
+  "dependencies": {
+    "jsonstat-toolkit": "^1.0.8",
+    "moment": "^2.29.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dobbychen/MMM-COVID-THL.git"
+  },
+  "keywords": [
+    "MagicMirror",
+    "Covid-19",
+    "THL",
+    "Finland"
+  ],
+  "author": "Dobbychen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Dobbychen/MMM-COVID-THL/issues"
+  },
+  "homepage": "https://github.com/Dobbychen/MMM-COVID-THL#readme"
+}

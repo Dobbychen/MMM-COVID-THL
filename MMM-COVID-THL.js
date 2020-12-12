@@ -3,9 +3,11 @@ Module.register("MMM-COVID-THL", {
 	defaults: {
 		districtWatchList: ["All", "Uusimaa", "Pirkanmaa"], // Support for partial search, available districts: "Åland", "Southwest Finland Hospital District","Satakunta Hospital District","Kanta-Häme Hospital District","Pirkanmaa Hospital District","Päijät-Häme Hospital District", "Kymenlaakso Hospital District", "South Karelia Hospital District", "South Savo Hospital District", "Itä-Savo Hospital District","North Karelia Hospital District","North Savo Hospital District",	"Central Finland Hospital District",	"South Ostrobothnia Hospital District",	"Vaasa Hospital District",	"Central Ostrobothnia Hospital District",	"North Ostrobothnia Hospital District",	"Kainuu Hospital District",	"Länsi-Pohja Hospital District",	"Lappi Hospital District",	"Helsinki and Uusimaa Hospital District","All areas"
 		// municipalityWatchList: ["Helsinki", "Tampere"], // Not supported yet
+		lastDateOffset : 0, // Last day's offset to today.  (Default: 0 / it means last date is today)
 		days: 14, // How many days of entries
-		updateInterval: 30 * 60000, // How often we would call the API's in milliseconds. (Default 30 minutes)
+		updateInterval: 60 * 60000, // How often we would call the API's in milliseconds. (Default 60 minutes)
 		language: "en", // now only support en, future available: en/fi/sv
+		moduleTitle: "😷 Number of Covid cases in Finland (Source: THL)"
 	},
 	// Define required scripts.
 	getScripts: function () {
@@ -41,11 +43,11 @@ Module.register("MMM-COVID-THL", {
 		if (this.fetchedData && this.fetchedData["header"]) {
 			Log.info("THL fetchedData ")
 
-			// Banner image
-			const banner = document.createElement("span");
-			banner.innerHTML = "😷 Number of Covid cases in Finland (Source: THL)";
-			banner.className = "banner";
-			wrapper.appendChild(banner);
+			// Module title
+			const title = document.createElement("span");
+			title.innerHTML = this.config.moduleTitle;
+			title.className = "title";
+			wrapper.appendChild(title);
 
 			Log.info(JSON.stringify(this.fetchedData))
 

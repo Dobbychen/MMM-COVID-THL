@@ -45,7 +45,9 @@ Configuration option | Comment | Default
 ---|---|---
 updateInterval | Refresh rate to call this API, there is no point to set this too low as THL updates their data daily | 7200000
 districtWatchList | districts to follow | ["All", "Uusimaa", "Pirkanmaa"]
+lastDateOffset | Offset of last date comparing to today. | 0 
 days | How many days of entries | 14
+moduleTitle | Title for the data table | 😷 Number of Covid cases in Finland (Source: THL)
 
 
 # Translations
