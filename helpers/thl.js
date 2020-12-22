@@ -7,7 +7,8 @@ function findWeekSid(dayOffset = 0, weekOffset = 0) {
 	let target_date = moment().subtract(dayOffset, "day").subtract(weekOffset, "week");
 	let year = target_date.year();
 
-	let weekNumber = year == 2020 ? target_date.week() : target_date.week() + 52;
+	let weekNumber = year == 2020 ? target_date.isoWeek() : target_date.isoWeek() % 52 + 53;
+	console.log("weekNumber: ", weekNumber);
 	let results = allDimensions[1]["children"][0]["children"].find(element => element.sort == weekNumber + 1)
 	return results.sid
 }
@@ -79,6 +80,13 @@ const THL = {
 		const forLoop = async _ => {
 			let rawAllData = []
 			let weeks = Math.ceil((days - lastDateOffset - 1) / 7) + 1; // Add one more week to be sure we get all the data
+
+			let target_date_week = moment().subtract(lastDateOffset, "day").isoWeek();
+			console.log(target_date_week)
+			if (target_date_week > 52 || target_date_week < 2) {
+				weeks++
+			}
+
 			console.log("Start async...")
 			for (let i = weeks; i > 0; i--) {
 				weekSID = findWeekSid(lastDateOffset, i - 1)
