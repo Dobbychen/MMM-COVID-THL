@@ -2,8 +2,12 @@ const JSONstat = require("jsonstat-toolkit");
 const moment = require("moment")
 
 const allDimensions = require('./dimensions2020.json')
+
 function findWeekSid(dayOffset = 0, weekOffset = 0) {
-	let weekNumber = moment().subtract(dayOffset, "day").subtract(weekOffset, "week").week();
+	let target_date = moment().subtract(dayOffset, "day").subtract(weekOffset, "week");
+	let year = target_date.year();
+
+	let weekNumber = year == 2020 ? target_date.week() : target_date.week() + 52;
 	let results = allDimensions[1]["children"][0]["children"].find(element => element.sort == weekNumber + 1)
 	return results.sid
 }
@@ -23,7 +27,7 @@ function createXdayHeader(dayOffset, days) {
 
 
 async function fetchWeeklyData(language, weekSID, districtWatchList) {
-	url = `https://sampo.thl.fi/pivot/prod/${language}/epirapo/covid19case/fact_epirapo_covid19case.json?column=dateweek2020010120201231-${weekSID}&column=hcdmunicipality2020-445222&row=measure-141082`
+	url = `https://sampo.thl.fi/pivot/prod/${language}/epirapo/covid19case/fact_epirapo_covid19case.json?column=dateweek20200101-${weekSID}&column=hcdmunicipality2020-445222&row=measure-141082`
 
 	hcdRegexp = new RegExp(districtWatchList.join("|"), 'gi');
 
@@ -35,7 +39,7 @@ async function fetchWeeklyData(language, weekSID, districtWatchList) {
 		var data = j.Dataset(0).toTable({ type: "arrobj", content: "label" }, function (d) {
 			if (d.hcdmunicipality2020.match(hcdRegexp) && d.measure.match(/(cases)|(deaths)/)) {
 				return {
-					date: d.dateweek2020010120201231,
+					date: d.dateweek20200101,
 					hcdmunicipality: d.hcdmunicipality2020,
 					measure: d.measure,
 					value: d.value ? d.value : 0
