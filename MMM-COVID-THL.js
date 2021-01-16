@@ -66,8 +66,10 @@ Module.register("MMM-COVID-THL", {
 
 			for (let i = 0; i < this.fetchedData["header"].length; i++) {
 				let headerRowCell = document.createElement("td")
-				let dateString = this.fetchedData["header"][i].split("-")
-				headerRowCell.innerHTML = dateString[2] + "." + dateString[1]
+				
+				let rawHeader = this.fetchedData["header"][i]
+				let dateString = rawHeader.split("-")
+				headerRowCell.innerHTML = rawHeader == "Total" ? "Total" : dateString[2] + "." + dateString[1]
 				headerRowCell.className = "covid-header-cell"
 				headerRow.appendChild(headerRowCell)
 			}
@@ -83,9 +85,21 @@ Module.register("MMM-COVID-THL", {
 				detailedRow.appendChild(detailedRowTitle)
 
 				for (let date in this.fetchedData["body"][key]) {
+					
 					let detailedRowCell = document.createElement("td")
-					detailedRowCell.innerHTML = this.fetchedData["body"][key][date]["Number of cases"] /* + "/" + this.fetchedData["body"][key][date]["Number of deaths"] */
 					detailedRowCell.className = "covid-detail-cell"
+
+					let numberOfCases = document.createElement("span")
+					numberOfCases.innerHTML = this.fetchedData["body"][key][date]["Number of cases"] 
+					numberOfCases.className = "covid-detail-postive"
+
+					let numberOfTests = document.createElement("span")
+					numberOfTests.innerHTML = "<br />" + this.fetchedData["body"][key][date]["Number of tests"]
+					numberOfTests.className = "covid-detail-tests"
+
+					detailedRowCell.appendChild(numberOfCases)
+					if (key === "All areas") detailedRowCell.appendChild(numberOfTests)
+
 					detailedRow.appendChild(detailedRowCell)
 				}
 				table.appendChild(detailedRow)

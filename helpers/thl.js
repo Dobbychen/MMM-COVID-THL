@@ -7,7 +7,7 @@ function findWeekSid(dayOffset = 0, weekOffset = 0) {
 	let target_date = moment().subtract(dayOffset, "day").subtract(weekOffset, "week");
 	let year = target_date.year();
 
-	let weekNumber = year == 2020 ? target_date.isoWeek() : target_date.isoWeek() % 52 + 53;
+	let weekNumber = year == 2020 ? target_date.isoWeek() : target_date.isoWeek() % 53 + 53;
 	console.log("weekNumber: ", weekNumber);
 	let results = allDimensions[1]["children"][0]["children"].find(element => element.sort == weekNumber + 1)
 	return results.sid
@@ -23,6 +23,7 @@ function createXdayHeader(dayOffset, days) {
 			header.push(today.subtract(i - 1, "days").format('YYYY-MM-DD'))
 		}
 	}
+	header.push("Total")
 	return header
 }
 
@@ -38,7 +39,7 @@ async function fetchWeeklyData(language, weekSID, districtWatchList) {
 		const j = await JSONstat(url)
 
 		var data = j.Dataset(0).toTable({ type: "arrobj", content: "label" }, function (d) {
-			if (d.hcdmunicipality2020.match(hcdRegexp) && d.measure.match(/(cases)|(deaths)/)) {
+			if (d.hcdmunicipality2020.match(hcdRegexp) && d.measure.match(/(cases)|(deaths)|(tests)|(Population)/)) {
 				return {
 					date: d.dateweek20200101,
 					hcdmunicipality: d.hcdmunicipality2020,
@@ -110,6 +111,23 @@ const THL = {
 					}
 				}
 			}
+			
+			let sumData = {}
+
+			for (let location in allDataBody) {
+				if (!sumData[location]) sumData[location] = {}
+				for (let date in allDataBody[location]) {
+					for (key in allDataBody[location][date]) {
+						if (!sumData[location][key]) sumData[location][key] = 0
+						sumData[location][key] += parseInt(allDataBody[location][date][key])
+					}
+				}
+			}
+
+			for (let location in sumData){
+				allDataBody[location]["Total"] = sumData[location]
+			}
+
 			allData["body"] = allDataBody
 			callback(allData)
 		})

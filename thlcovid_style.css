@@ -1,14 +1,16 @@
-@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
+@import url("https://fonts.googleapis.com/css?family=Source+Code+Pro");
 
-.thlwrapper {  
+
+.thlwrapper {
   color: #cccccc;
   font-family: "Source Code Pro", monospace;
   font-size: 12pt;
   text-align: center;
+  line-height: 1em;
 }
 
 .thlwrapper .title {
-  height: 3em;
+  height: 1em;
   display: block;
   margin: 0 auto 10px auto;
   font-size: 14pt;
@@ -17,17 +19,36 @@
 
 .thlwrapper .covid-table .covid-header-row {
   margin-bottom: 12px;
-  line-height: 1.3em;
+  line-height: 2em;
 }
 
 .thlwrapper .covid-table .covid-header-cell {
-  padding: 0 3px 4px 3px;
+  padding: 0 4px 4px 4px;
+  width: 40px ;
   font-size: 12pt;
+  line-height: 3em !important;
+}
+
+.covid-detail-postive {
+  line-height: 0.8em !important;
+  color: red;
+}
+
+.covid-detail-tests {
+  line-height: 0.8em !important;
+  color: yellow;
+}
+
+.covid-detail-deaths {
+  color: red;
 }
 
 .thlwrapper .covid-table .covid-detail-location {
   text-align: left;
-  line-height: 1.2em;
+  vertical-align: bottom;
+  line-height: 1.4em;
   font-size: 10pt;
   text-overflow: ellipsis;
+  margin-bottom: 8px;
+  border-bottom: 0.1px solid white;
 }
