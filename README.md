@@ -48,7 +48,8 @@ districtWatchList | districts to follow | ["All", "Uusimaa", "Pirkanmaa"]
 lastDateOffset | Offset of last date comparing to today. | 0 
 days | How many days of entries | 14
 moduleTitle | Title for the data table | 😷 Number of Covid cases in Finland (Source: THL)
-
+infectedColor | CSS text color for Covid-19 positive numbers |  "red" 
+vaccinatedColor | Css text color for Covid-19 vaccincated numbers | "green" 
 
 # Translations
 
