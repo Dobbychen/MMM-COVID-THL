@@ -1,6 +1,6 @@
 const JSONstat = require("jsonstat-toolkit");
 const moment = require("moment");
-const getRokotusData = require("./rokotus.js");
+const getVaccinationData = require("./rokotus.js");
 
 const allDimensions = require("./dimensions2020.json");
 
@@ -34,7 +34,7 @@ function createXdayHeader(dayOffset, days) {
 }
 
 async function fetchWeeklyData(language, weekSID, districtWatchList) {
-  url = `https://sampo.thl.fi/pivot/prod/${language}/epirapo/covid19case/fact_epirapo_covid19case.json?column=dateweek20200101-${weekSID}&column=hcdmunicipality2020-445222&row=measure-141082`;
+  const url = `https://sampo.thl.fi/pivot/prod/${language}/epirapo/covid19case/fact_epirapo_covid19case.json?column=dateweek20200101-${weekSID}&column=hcdmunicipality2020-445222&row=measure-141082`;
 
   hcdRegexp = new RegExp(districtWatchList.join("|"), "gi");
 
@@ -106,8 +106,12 @@ const THL = {
         rawAllData.push(data["body"]);
       }
 
-      let rokotusData = await getRokotusData();
-      return [rawAllData, rokotusData];
+      let rokotusData = await getVaccinationData(language, districtWatchList); // to fix
+
+      /* let rokotusData = await getRokotusData(); */ return [
+        rawAllData,
+        rokotusData
+      ];
     };
 
     forLoop().then((result) => {
@@ -148,7 +152,10 @@ const THL = {
       for (let location in sumData) {
         allDataBody[location]["Total"] = sumData[location];
         allDataBody[location]["Vaccinated"] = {
-          "Number of cases": rokotusData[location]["total"]
+          "Number of cases": (
+            parseInt(rokotusData[location]["first_dose"]) +
+            parseInt(rokotusData[location]["second_dose"])
+          ).toString()
         };
       }
 
